@@ -30,6 +30,16 @@ class ProcessOrder implements ShouldQueue
      */
     public function handle()
     {
-        return $this->data;
+        $rand = rand(0,2);
+        if($rand % 2){
+            return $this->data;
+        }
+        //throw new \Exception('Erro');
+        $this->job->fail(new \Exception('Erro'));
+    }
+
+    public function failed()
+    {
+        dispatch(new ProcessOrder($this->data))->onQueue('default');
     }
 }
